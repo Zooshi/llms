@@ -1,0 +1,312 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Zooshi/llms/blob/main/DeepfakeCreation\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "D3L8Lkyj-5gl"
+      },
+      "source": [
+        "#Clone roop repo and install dependencies"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "0aHr4Fo-7IRy",
+        "outputId": "669d81f5-1223-4e63-e3a2-b452d398e08f"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "fatal: destination path 'roop' already exists and is not an empty directory.\n",
+            "/content/roop\n",
+            "Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cu118\n",
+            "Ignoring tkinterdnd2-universal: markers 'sys_platform == \"darwin\" and platform_machine == \"arm64\"' don't match your environment\n",
+            "Ignoring onnxruntime: markers 'python_version != \"3.9\" and sys_platform == \"darwin\" and platform_machine != \"arm64\"' don't match your environment\n",
+            "Ignoring onnxruntime-coreml: markers 'python_version == \"3.9\" and sys_platform == \"darwin\" and platform_machine != \"arm64\"' don't match your environment\n",
+            "Ignoring onnxruntime-silicon: markers 'sys_platform == \"darwin\" and platform_machine == \"arm64\"' don't match your environment\n",
+            "Requirement already satisfied: numpy==1.24.3 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 3)) (1.24.3)\n",
+            "Requirement already satisfied: opencv-python==4.8.0.74 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 4)) (4.8.0.74)\n",
+            "Requirement already satisfied: onnx==1.14.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 5)) (1.14.0)\n",
+            "Requirement already satisfied: insightface==0.7.3 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 6)) (0.7.3)\n",
+            "Requirement already satisfied: psutil==5.9.5 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 7)) (5.9.5)\n",
+            "Requirement already satisfied: tk==0.1.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 8)) (0.1.0)\n",
+            "Requirement already satisfied: customtkinter==5.2.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 9)) (5.2.0)\n",
+            "Requirement already satisfied: tkinterdnd2==0.3.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 10)) (0.3.0)\n",
+            "Requirement already satisfied: pillow==10.0.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 12)) (10.0.0)\n",
+            "Requirement already satisfied: onnxruntime-gpu==1.15.1 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 16)) (1.15.1)\n",
+            "Requirement already satisfied: tensorflow==2.13.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 17)) (2.13.0)\n",
+            "Requirement already satisfied: opennsfw2==0.10.2 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 18)) (0.10.2)\n",
+            "Requirement already satisfied: protobuf==4.23.4 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 19)) (4.23.4)\n",
+            "Requirement already satisfied: tqdm==4.65.0 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 20)) (4.65.0)\n",
+            "Requirement already satisfied: gfpgan==1.3.8 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 21)) (1.3.8)\n",
+            "Requirement already satisfied: typing-extensions>=3.6.2.1 in /usr/local/lib/python3.10/dist-packages (from onnx==1.14.0->-r requirements.txt (line 5)) (4.5.0)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (2.31.0)\n",
+            "Requirement already satisfied: matplotlib in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (3.7.1)\n",
+            "Requirement already satisfied: scipy in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (1.10.1)\n",
+            "Requirement already satisfied: scikit-learn in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (1.2.2)\n",
+            "Requirement already satisfied: scikit-image in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (0.19.3)\n",
+            "Requirement already satisfied: easydict in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (1.10)\n",
+            "Requirement already satisfied: cython in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (0.29.36)\n",
+            "Requirement already satisfied: albumentations in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (1.3.1)\n",
+            "Requirement already satisfied: prettytable in /usr/local/lib/python3.10/dist-packages (from insightface==0.7.3->-r requirements.txt (line 6)) (3.8.0)\n",
+            "Requirement already satisfied: darkdetect in /usr/local/lib/python3.10/dist-packages (from customtkinter==5.2.0->-r requirements.txt (line 9)) (0.8.0)\n",
+            "Requirement already satisfied: coloredlogs in /usr/local/lib/python3.10/dist-packages (from onnxruntime-gpu==1.15.1->-r requirements.txt (line 16)) (15.0.1)\n",
+            "Requirement already satisfied: flatbuffers in /usr/local/lib/python3.10/dist-packages (from onnxruntime-gpu==1.15.1->-r requirements.txt (line 16)) (23.5.26)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from onnxruntime-gpu==1.15.1->-r requirements.txt (line 16)) (23.1)\n",
+            "Requirement already satisfied: sympy in /usr/local/lib/python3.10/dist-packages (from onnxruntime-gpu==1.15.1->-r requirements.txt (line 16)) (1.12)\n",
+            "Requirement already satisfied: absl-py>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (1.4.0)\n",
+            "Requirement already satisfied: astunparse>=1.6.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (1.6.3)\n",
+            "Requirement already satisfied: gast<=0.4.0,>=0.2.1 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (0.4.0)\n",
+            "Requirement already satisfied: google-pasta>=0.1.1 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (0.2.0)\n",
+            "Requirement already satisfied: grpcio<2.0,>=1.24.3 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (1.57.0)\n",
+            "Requirement already satisfied: h5py>=2.9.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (3.9.0)\n",
+            "Requirement already satisfied: keras<2.14,>=2.13.1 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (2.13.1)\n",
+            "Requirement already satisfied: libclang>=13.0.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (16.0.6)\n",
+            "Requirement already satisfied: opt-einsum>=2.3.2 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (3.3.0)\n",
+            "Requirement already satisfied: setuptools in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (67.7.2)\n",
+            "Requirement already satisfied: six>=1.12.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (1.16.0)\n",
+            "Requirement already satisfied: tensorboard<2.14,>=2.13 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (2.13.0)\n",
+            "Requirement already satisfied: tensorflow-estimator<2.14,>=2.13.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (2.13.0)\n",
+            "Requirement already satisfied: termcolor>=1.1.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (2.3.0)\n",
+            "Requirement already satisfied: wrapt>=1.11.0 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (1.14.1)\n",
+            "Requirement already satisfied: tensorflow-io-gcs-filesystem>=0.23.1 in /usr/local/lib/python3.10/dist-packages (from tensorflow==2.13.0->-r requirements.txt (line 17)) (0.33.0)\n",
+            "Requirement already satisfied: gdown>=4.2.0 in /usr/local/lib/python3.10/dist-packages (from opennsfw2==0.10.2->-r requirements.txt (line 18)) (4.6.6)\n",
+            "Requirement already satisfied: basicsr>=1.4.2 in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (1.4.2)\n",
+            "Requirement already satisfied: facexlib>=0.2.5 in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (0.3.0)\n",
+            "Requirement already satisfied: lmdb in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (1.4.1)\n",
+            "Requirement already satisfied: pyyaml in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (6.0.1)\n",
+            "Requirement already satisfied: tb-nightly in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (2.15.0a20230822)\n",
+            "Requirement already satisfied: torch>=1.7 in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (2.0.1+cu118)\n",
+            "Requirement already satisfied: torchvision in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (0.15.2+cu118)\n",
+            "Requirement already satisfied: yapf in /usr/local/lib/python3.10/dist-packages (from gfpgan==1.3.8->-r requirements.txt (line 21)) (0.40.1)\n",
+            "Requirement already satisfied: wheel<1.0,>=0.23.0 in /usr/local/lib/python3.10/dist-packages (from astunparse>=1.6.0->tensorflow==2.13.0->-r requirements.txt (line 17)) (0.41.1)\n",
+            "Requirement already satisfied: addict in /usr/local/lib/python3.10/dist-packages (from basicsr>=1.4.2->gfpgan==1.3.8->-r requirements.txt (line 21)) (2.4.0)\n",
+            "Requirement already satisfied: future in /usr/local/lib/python3.10/dist-packages (from basicsr>=1.4.2->gfpgan==1.3.8->-r requirements.txt (line 21)) (0.18.3)\n",
+            "Requirement already satisfied: filterpy in /usr/local/lib/python3.10/dist-packages (from facexlib>=0.2.5->gfpgan==1.3.8->-r requirements.txt (line 21)) (1.4.5)\n",
+            "Requirement already satisfied: numba in /usr/local/lib/python3.10/dist-packages (from facexlib>=0.2.5->gfpgan==1.3.8->-r requirements.txt (line 21)) (0.57.1)\n",
+            "Requirement already satisfied: filelock in /usr/local/lib/python3.10/dist-packages (from gdown>=4.2.0->opennsfw2==0.10.2->-r requirements.txt (line 18)) (3.12.2)\n",
+            "Requirement already satisfied: beautifulsoup4 in /usr/local/lib/python3.10/dist-packages (from gdown>=4.2.0->opennsfw2==0.10.2->-r requirements.txt (line 18)) (4.11.2)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib->insightface==0.7.3->-r requirements.txt (line 6)) (1.1.0)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.10/dist-packages (from matplotlib->insightface==0.7.3->-r requirements.txt (line 6)) (0.11.0)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib->insightface==0.7.3->-r requirements.txt (line 6)) (4.42.0)\n",
+            "Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib->insightface==0.7.3->-r requirements.txt (line 6)) (1.4.4)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib->insightface==0.7.3->-r requirements.txt (line 6)) (3.1.1)\n",
+            "Requirement already satisfied: python-dateutil>=2.7 in /usr/local/lib/python3.10/dist-packages (from matplotlib->insightface==0.7.3->-r requirements.txt (line 6)) (2.8.2)\n",
+            "Requirement already satisfied: networkx>=2.2 in /usr/local/lib/python3.10/dist-packages (from scikit-image->insightface==0.7.3->-r requirements.txt (line 6)) (3.1)\n",
+            "Requirement already satisfied: imageio>=2.4.1 in /usr/local/lib/python3.10/dist-packages (from scikit-image->insightface==0.7.3->-r requirements.txt (line 6)) (2.31.1)\n",
+            "Requirement already satisfied: tifffile>=2019.7.26 in /usr/local/lib/python3.10/dist-packages (from scikit-image->insightface==0.7.3->-r requirements.txt (line 6)) (2023.8.12)\n",
+            "Requirement already satisfied: PyWavelets>=1.1.1 in /usr/local/lib/python3.10/dist-packages (from scikit-image->insightface==0.7.3->-r requirements.txt (line 6)) (1.4.1)\n",
+            "Requirement already satisfied: google-auth<3,>=1.6.3 in /usr/local/lib/python3.10/dist-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (2.17.3)\n",
+            "Requirement already satisfied: google-auth-oauthlib<1.1,>=0.5 in /usr/local/lib/python3.10/dist-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (1.0.0)\n",
+            "Requirement already satisfied: markdown>=2.6.8 in /usr/local/lib/python3.10/dist-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (3.4.4)\n",
+            "Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /usr/local/lib/python3.10/dist-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (0.7.1)\n",
+            "Requirement already satisfied: werkzeug>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (2.3.7)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests->insightface==0.7.3->-r requirements.txt (line 6)) (3.2.0)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.10/dist-packages (from requests->insightface==0.7.3->-r requirements.txt (line 6)) (3.4)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests->insightface==0.7.3->-r requirements.txt (line 6)) (2.0.4)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests->insightface==0.7.3->-r requirements.txt (line 6)) (2023.7.22)\n",
+            "Requirement already satisfied: jinja2 in /usr/local/lib/python3.10/dist-packages (from torch>=1.7->gfpgan==1.3.8->-r requirements.txt (line 21)) (3.1.2)\n",
+            "Requirement already satisfied: triton==2.0.0 in /usr/local/lib/python3.10/dist-packages (from torch>=1.7->gfpgan==1.3.8->-r requirements.txt (line 21)) (2.0.0)\n",
+            "Requirement already satisfied: cmake in /usr/local/lib/python3.10/dist-packages (from triton==2.0.0->torch>=1.7->gfpgan==1.3.8->-r requirements.txt (line 21)) (3.27.2)\n",
+            "Requirement already satisfied: lit in /usr/local/lib/python3.10/dist-packages (from triton==2.0.0->torch>=1.7->gfpgan==1.3.8->-r requirements.txt (line 21)) (16.0.6)\n",
+            "Requirement already satisfied: qudida>=0.0.4 in /usr/local/lib/python3.10/dist-packages (from albumentations->insightface==0.7.3->-r requirements.txt (line 6)) (0.0.4)\n",
+            "Requirement already satisfied: opencv-python-headless>=4.1.1 in /usr/local/lib/python3.10/dist-packages (from albumentations->insightface==0.7.3->-r requirements.txt (line 6)) (4.8.0.76)\n",
+            "Requirement already satisfied: humanfriendly>=9.1 in /usr/local/lib/python3.10/dist-packages (from coloredlogs->onnxruntime-gpu==1.15.1->-r requirements.txt (line 16)) (10.0)\n",
+            "Requirement already satisfied: wcwidth in /usr/local/lib/python3.10/dist-packages (from prettytable->insightface==0.7.3->-r requirements.txt (line 6)) (0.2.6)\n",
+            "Requirement already satisfied: joblib>=1.1.1 in /usr/local/lib/python3.10/dist-packages (from scikit-learn->insightface==0.7.3->-r requirements.txt (line 6)) (1.3.2)\n",
+            "Requirement already satisfied: threadpoolctl>=2.0.0 in /usr/local/lib/python3.10/dist-packages (from scikit-learn->insightface==0.7.3->-r requirements.txt (line 6)) (3.2.0)\n",
+            "Requirement already satisfied: mpmath>=0.19 in /usr/local/lib/python3.10/dist-packages (from sympy->onnxruntime-gpu==1.15.1->-r requirements.txt (line 16)) (1.3.0)\n",
+            "Requirement already satisfied: importlib-metadata>=6.6.0 in /usr/local/lib/python3.10/dist-packages (from yapf->gfpgan==1.3.8->-r requirements.txt (line 21)) (6.8.0)\n",
+            "Requirement already satisfied: platformdirs>=3.5.1 in /usr/local/lib/python3.10/dist-packages (from yapf->gfpgan==1.3.8->-r requirements.txt (line 21)) (3.10.0)\n",
+            "Requirement already satisfied: tomli>=2.0.1 in /usr/local/lib/python3.10/dist-packages (from yapf->gfpgan==1.3.8->-r requirements.txt (line 21)) (2.0.1)\n",
+            "Requirement already satisfied: cachetools<6.0,>=2.0.0 in /usr/local/lib/python3.10/dist-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (5.3.1)\n",
+            "Requirement already satisfied: pyasn1-modules>=0.2.1 in /usr/local/lib/python3.10/dist-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (0.3.0)\n",
+            "Requirement already satisfied: rsa<5,>=3.1.4 in /usr/local/lib/python3.10/dist-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (4.9)\n",
+            "Requirement already satisfied: requests-oauthlib>=0.7.0 in /usr/local/lib/python3.10/dist-packages (from google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (1.3.1)\n",
+            "Requirement already satisfied: zipp>=0.5 in /usr/local/lib/python3.10/dist-packages (from importlib-metadata>=6.6.0->yapf->gfpgan==1.3.8->-r requirements.txt (line 21)) (3.16.2)\n",
+            "Requirement already satisfied: MarkupSafe>=2.1.1 in /usr/local/lib/python3.10/dist-packages (from werkzeug>=1.0.1->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (2.1.3)\n",
+            "Requirement already satisfied: soupsieve>1.2 in /usr/local/lib/python3.10/dist-packages (from beautifulsoup4->gdown>=4.2.0->opennsfw2==0.10.2->-r requirements.txt (line 18)) (2.4.1)\n",
+            "Requirement already satisfied: llvmlite<0.41,>=0.40.0dev0 in /usr/local/lib/python3.10/dist-packages (from numba->facexlib>=0.2.5->gfpgan==1.3.8->-r requirements.txt (line 21)) (0.40.1)\n",
+            "Requirement already satisfied: PySocks!=1.5.7,>=1.5.6 in /usr/local/lib/python3.10/dist-packages (from requests->insightface==0.7.3->-r requirements.txt (line 6)) (1.7.1)\n",
+            "Requirement already satisfied: pyasn1<0.6.0,>=0.4.6 in /usr/local/lib/python3.10/dist-packages (from pyasn1-modules>=0.2.1->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (0.5.0)\n",
+            "Requirement already satisfied: oauthlib>=3.0.0 in /usr/local/lib/python3.10/dist-packages (from requests-oauthlib>=0.7.0->google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0->-r requirements.txt (line 17)) (3.2.2)\n"
+          ]
+        }
+      ],
+      "source": [
+        "!git clone https://github.com/based9based/roop\n",
+        "%cd roop\n",
+        "!pip install -r requirements.txt"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "jl9zIFZYGWTQ"
+      },
+      "source": [
+        "#download model"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "UQH2exUYGTbK",
+        "outputId": "c56efb08-4a15-4077-f544-5ab384ea8e9e"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "--2023-08-22 18:32:18--  https://civitai.com/api/download/models/85159\n",
+            "Resolving civitai.com (civitai.com)... 104.18.23.206, 104.18.22.206, 2606:4700::6812:17ce, ...\n",
+            "Connecting to civitai.com (civitai.com)|104.18.23.206|:443... connected.\n",
+            "HTTP request sent, awaiting response... 307 Temporary Redirect\n",
+            "Location: https://civitai-delivery-worker-prod-2023-08-01.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com/1/model/inswapper128.lhhH.onnx?X-Amz-Expires=86400&response-content-disposition=attachment%3B%20filename%3D%22roopVideoFace_v10.onnx%22&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=2fea663d76bd24a496545da373d610fc/20230822/us-east-1/s3/aws4_request&X-Amz-Date=20230822T183218Z&X-Amz-SignedHeaders=host&X-Amz-Signature=ea09e87b3cd14c8bb3cd10894805763c85a3213431a17c5d58e1439fd6a550ff [following]\n",
+            "--2023-08-22 18:32:18--  https://civitai-delivery-worker-prod-2023-08-01.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com/1/model/inswapper128.lhhH.onnx?X-Amz-Expires=86400&response-content-disposition=attachment%3B%20filename%3D%22roopVideoFace_v10.onnx%22&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=2fea663d76bd24a496545da373d610fc/20230822/us-east-1/s3/aws4_request&X-Amz-Date=20230822T183218Z&X-Amz-SignedHeaders=host&X-Amz-Signature=ea09e87b3cd14c8bb3cd10894805763c85a3213431a17c5d58e1439fd6a550ff\n",
+            "Resolving civitai-delivery-worker-prod-2023-08-01.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com (civitai-delivery-worker-prod-2023-08-01.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com)... 104.18.9.90, 104.18.8.90, 2606:4700::6812:85a, ...\n",
+            "Connecting to civitai-delivery-worker-prod-2023-08-01.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com (civitai-delivery-worker-prod-2023-08-01.5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com)|104.18.9.90|:443... connected.\n",
+            "HTTP request sent, awaiting response... 200 OK\n",
+            "Length: 554253681 (529M) [application/octet-stream]\n",
+            "Saving to: ‘inswapper_128.onnx’\n",
+            "\n",
+            "inswapper_128.onnx  100%[===================>] 528.58M  43.5MB/s    in 12s     \n",
+            "\n",
+            "2023-08-22 18:32:30 (45.9 MB/s) - ‘inswapper_128.onnx’ saved [554253681/554253681]\n",
+            "\n"
+          ]
+        }
+      ],
+      "source": [
+        "!wget https://civitai.com/api/download/models/85159 -O inswapper_128.onnx"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "nCKli1C-_EaO"
+      },
+      "source": [
+        "#Deepfake"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lDYdfL3L71i1",
+        "outputId": "6b7a8be7-d159-43fc-b0ec-bf72892630e1"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Downloading: 224kB [00:00, 568kB/s]\n",
+            "Downloading: 332MB [00:01, 183MB/s]               \n",
+            "download_path: /root/.insightface/models/buffalo_l\n",
+            "Downloading /root/.insightface/models/buffalo_l.zip from https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip...\n",
+            "100% 281857/281857 [00:03<00:00, 80842.53KB/s]\n",
+            "Applied providers: ['CUDAExecutionProvider', 'CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}, 'CUDAExecutionProvider': {'device_id': '0', 'gpu_mem_limit': '18446744073709551615', 'gpu_external_alloc': '0', 'gpu_external_free': '0', 'gpu_external_empty_cache': '0', 'cudnn_conv_algo_search': 'EXHAUSTIVE', 'cudnn_conv1d_pad_to_nc1d': '0', 'arena_extend_strategy': 'kNextPowerOfTwo', 'do_copy_in_default_stream': '1', 'enable_cuda_graph': '0', 'cudnn_conv_use_max_workspace': '1', 'tunable_op_enable': '0', 'enable_skip_layer_norm_strict_mode': '0', 'tunable_op_tuning_enable': '0'}}\n",
+            "find model: /root/.insightface/models/buffalo_l/1k3d68.onnx landmark_3d_68 ['None', 3, 192, 192] 0.0 1.0\n",
+            "Applied providers: ['CUDAExecutionProvider', 'CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}, 'CUDAExecutionProvider': {'device_id': '0', 'gpu_mem_limit': '18446744073709551615', 'gpu_external_alloc': '0', 'gpu_external_free': '0', 'gpu_external_empty_cache': '0', 'cudnn_conv_algo_search': 'EXHAUSTIVE', 'cudnn_conv1d_pad_to_nc1d': '0', 'arena_extend_strategy': 'kNextPowerOfTwo', 'do_copy_in_default_stream': '1', 'enable_cuda_graph': '0', 'cudnn_conv_use_max_workspace': '1', 'tunable_op_enable': '0', 'enable_skip_layer_norm_strict_mode': '0', 'tunable_op_tuning_enable': '0'}}\n",
+            "find model: /root/.insightface/models/buffalo_l/2d106det.onnx landmark_2d_106 ['None', 3, 192, 192] 0.0 1.0\n",
+            "Applied providers: ['CUDAExecutionProvider', 'CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}, 'CUDAExecutionProvider': {'device_id': '0', 'gpu_mem_limit': '18446744073709551615', 'gpu_external_alloc': '0', 'gpu_external_free': '0', 'gpu_external_empty_cache': '0', 'cudnn_conv_algo_search': 'EXHAUSTIVE', 'cudnn_conv1d_pad_to_nc1d': '0', 'arena_extend_strategy': 'kNextPowerOfTwo', 'do_copy_in_default_stream': '1', 'enable_cuda_graph': '0', 'cudnn_conv_use_max_workspace': '1', 'tunable_op_enable': '0', 'enable_skip_layer_norm_strict_mode': '0', 'tunable_op_tuning_enable': '0'}}\n",
+            "find model: /root/.insightface/models/buffalo_l/det_10g.onnx detection [1, 3, '?', '?'] 127.5 128.0\n",
+            "Applied providers: ['CUDAExecutionProvider', 'CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}, 'CUDAExecutionProvider': {'device_id': '0', 'gpu_mem_limit': '18446744073709551615', 'gpu_external_alloc': '0', 'gpu_external_free': '0', 'gpu_external_empty_cache': '0', 'cudnn_conv_algo_search': 'EXHAUSTIVE', 'cudnn_conv1d_pad_to_nc1d': '0', 'arena_extend_strategy': 'kNextPowerOfTwo', 'do_copy_in_default_stream': '1', 'enable_cuda_graph': '0', 'cudnn_conv_use_max_workspace': '1', 'tunable_op_enable': '0', 'enable_skip_layer_norm_strict_mode': '0', 'tunable_op_tuning_enable': '0'}}\n",
+            "find model: /root/.insightface/models/buffalo_l/genderage.onnx genderage ['None', 3, 96, 96] 0.0 1.0\n",
+            "Applied providers: ['CUDAExecutionProvider', 'CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}, 'CUDAExecutionProvider': {'device_id': '0', 'gpu_mem_limit': '18446744073709551615', 'gpu_external_alloc': '0', 'gpu_external_free': '0', 'gpu_external_empty_cache': '0', 'cudnn_conv_algo_search': 'EXHAUSTIVE', 'cudnn_conv1d_pad_to_nc1d': '0', 'arena_extend_strategy': 'kNextPowerOfTwo', 'do_copy_in_default_stream': '1', 'enable_cuda_graph': '0', 'cudnn_conv_use_max_workspace': '1', 'tunable_op_enable': '0', 'enable_skip_layer_norm_strict_mode': '0', 'tunable_op_tuning_enable': '0'}}\n",
+            "find model: /root/.insightface/models/buffalo_l/w600k_r50.onnx recognition ['None', 3, 112, 112] 127.5 127.5\n",
+            "set det-size: (640, 640)\n",
+            "Pre-trained weights will be downloaded.\n",
+            "Downloading...\n",
+            "From: https://github.com/bhky/opennsfw2/releases/download/v0.1.0/open_nsfw_weights.h5\n",
+            "To: /root/.opennsfw2/weights/open_nsfw_weights.h5\n",
+            "100% 24.2M/24.2M [00:00<00:00, 37.6MB/s]\n",
+            "100% 168/168 [00:02<00:00, 62.93it/s] \n",
+            "[ROOP.CORE] Creating temporary resources...\n",
+            "[ROOP.CORE] Extracting frames with 30 FPS...\n",
+            "[ROOP.FACE-SWAPPER] Progressing...\n",
+            "Processing:   0% 0/210 [00:01<?, ?frame/s, memory_usage=05.13GB, execution_providers=['CUDAExecutionProvider'], execution_threads=8]Applied providers: ['CUDAExecutionProvider', 'CPUExecutionProvider'], with options: {'CPUExecutionProvider': {}, 'CUDAExecutionProvider': {'device_id': '0', 'gpu_mem_limit': '18446744073709551615', 'gpu_external_alloc': '0', 'gpu_external_free': '0', 'gpu_external_empty_cache': '0', 'cudnn_conv_algo_search': 'EXHAUSTIVE', 'cudnn_conv1d_pad_to_nc1d': '0', 'arena_extend_strategy': 'kNextPowerOfTwo', 'do_copy_in_default_stream': '1', 'enable_cuda_graph': '0', 'cudnn_conv_use_max_workspace': '1', 'tunable_op_enable': '0', 'enable_skip_layer_norm_strict_mode': '0', 'tunable_op_tuning_enable': '0'}}\n",
+            "Processing:   0% 1/210 [00:01<05:00,  1.44s/frame, memory_usage=05.13GB, execution_providers=['CUDAExecutionProvider'], execution_threads=8]inswapper-shape: [1, 3, 128, 128]\n",
+            "Processing: 100% 210/210 [00:45<00:00,  4.62frame/s, memory_usage=05.23GB, execution_providers=['CUDAExecutionProvider'], execution_threads=8]\n",
+            "[ROOP.FACE-ENHANCER] Progressing...\n",
+            "Processing:   0% 0/210 [00:00<?, ?frame/s]Downloading: \"https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth\" to /content/roop/gfpgan/weights/detection_Resnet50_Final.pth\n",
+            "\n",
+            "\n",
+            "  0% 0.00/104M [00:00<?, ?B/s]\u001b[A\n",
+            " 11% 11.2M/104M [00:00<00:00, 118MB/s]\u001b[A\n",
+            " 36% 37.9M/104M [00:00<00:00, 213MB/s]\u001b[A\n",
+            " 62% 64.7M/104M [00:00<00:00, 239MB/s]\u001b[A\n",
+            "100% 104M/104M [00:00<00:00, 236MB/s] \n",
+            "Downloading: \"https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth\" to /content/roop/gfpgan/weights/parsing_parsenet.pth\n",
+            "\n",
+            "\n",
+            "  0% 0.00/81.4M [00:00<?, ?B/s]\u001b[A\n",
+            " 14% 11.6M/81.4M [00:00<00:00, 121MB/s]\u001b[A\n",
+            " 48% 38.7M/81.4M [00:00<00:00, 217MB/s]\u001b[A\n",
+            "100% 81.4M/81.4M [00:00<00:00, 228MB/s]\n",
+            "Processing: 100% 210/210 [01:34<00:00,  2.23frame/s, memory_usage=05.54GB, execution_providers=['CUDAExecutionProvider'], execution_threads=8]\n",
+            "[ROOP.CORE] Creating video with 30 FPS...\n",
+            "[ROOP.CORE] Restoring audio might cause issues as fps are not kept...\n",
+            "[ROOP.CORE] Cleaning temporary resources...\n",
+            "[ROOP.CORE] Processing to video succeed!\n"
+          ]
+        }
+      ],
+      "source": [
+        "!python run.py --target /content/NSF.mp4 --source /content/AS.jpg -o /content/swapped.mp4 --execution-provider cuda --frame-processor face_swapper face_enhancer"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "dB-yigWx8zht"
+      },
+      "outputs": [],
+      "source": []
+    }
+  ],
+  "metadata": {
+    "accelerator": "GPU",
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
